@@ -1,6 +1,8 @@
 # Portafolio freelance — Carlos Andrés Martínez Portillo
 
-Portafolio bilingüe estático con Astro, TypeScript, Bootstrap 5.3 y CSS propio. No usa Tailwind, backend, analítica ni servicios de pago. No se ha publicado.
+Portafolio bilingüe estático con Astro, TypeScript, Bootstrap 5.3 y CSS propio. No usa Tailwind, backend, analítica ni servicios de pago.
+
+Sitio público: [and73s.github.io/portafolio-freelance](https://and73s.github.io/portafolio-freelance/).
 
 ## Ejecutar
 
@@ -85,7 +87,7 @@ Para un dominio propio o repositorio `TU-USUARIO.github.io`, usar `/` como base 
 4. Contenido: servicios, proyectos, perfil, proceso y contacto configurable.
 5. Demos: dashboard, reportes CSV/XLSX y pedidos locales.
 6. Calidad: comprobación de tipos, pruebas unitarias y flujos de navegador.
-7. Publicación: configuración preparada; despliegue pendiente de autorización y configuración personal.
+7. Publicación: desplegado en GitHub Pages mediante el workflow manual. Correo y perfiles profesionales pendientes de configuración.
 
 ## Verificación realizada
 
