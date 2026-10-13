@@ -1,0 +1,28 @@
+---
+import { translations, type Locale } from '../i18n';
+const {lang} = Astro.props as {lang:Locale}; const t=translations[lang];
+---
+<section id="lab" class="section lab-section"><div class="container">
+  <div class="section-heading"><p class="eyebrow">03 / {t.nav[2]}</p><h2>{t.labTitle}</h2><p>{t.labIntro}</p></div>
+  <div class="lab" data-locale={lang}>
+    <div class="lab-tabs" role="tablist" aria-label={t.nav[2]}>{t.tabs.map((label,i) => <button id={`tab-${i}`} role="tab" aria-selected={i===0 ? 'true':'false'} aria-controls={`panel-${i}`} tabindex={i===0?0:-1} data-tab={i}><span>0{i+1}</span>{label}</button>)}</div>
+    <div id="panel-0" role="tabpanel" aria-labelledby="tab-0" class="lab-panel">
+      <div class="lab-toolbar"><p class="eyebrow">{t.fictitious}</p><div class="d-flex gap-3 flex-wrap"><label for="period">{t.period}<select id="period"><option value="3">{t.periods[0]}</option><option value="6">{t.periods[1]}</option></select></label><label for="category">{t.category}<select id="category">{t.categories.map((c,i)=><option value={i}>{c}</option>)}</select></label></div></div>
+      <div class="row metrics">{t.metrics.map((label,i)=><div class="col-12 col-sm-4"><span>{label}</span><strong id={`metric-${i}`}>—</strong></div>)}</div>
+      <div class="row g-4"><div class="col-lg-8"><h3>{t.evolution}</h3><div class="chart"><canvas id="sales-chart" role="img" aria-label={t.chartAlt}/></div></div><div class="col-lg-4"><h3>{t.breakdown}</h3><div class="chart"><canvas id="category-chart" role="img" aria-label={t.chartAlt}/></div></div></div>
+      <div class="row g-4 mt-3"><div class="col-md-6"><table><caption>{t.evolution}</caption><thead><tr><th>{t.month}</th><th>{t.sales}</th></tr></thead><tbody id="sales-table"/></table></div><div class="col-md-6"><table><caption>{t.top}</caption><thead><tr><th>{t.category}</th><th>{t.sales}</th></tr></thead><tbody id="top-table"/></table><button id="refresh" class="text-button mt-3">{t.refresh} ↗</button></div></div>
+    </div>
+    <div id="panel-1" role="tabpanel" aria-labelledby="tab-1" class="lab-panel" hidden>
+      <p class="eyebrow">{t.fictitious}</p><h3 class="demo-title">{t.fileTitle}</h3><p class="file-help">{t.fileHelp}</p>
+      <button id="sample" class="text-button">{t.sample} ↓</button>
+      <div class="upload-zone"><label for="files">{t.upload}</label><input type="file" id="files" accept=".csv,.xlsx" multiple/><button id="process" class="button-primary">{t.process} ↗</button></div>
+      <p id="file-status" role="status">{t.fileIdle}</p><button id="download" class="button-secondary" hidden>{t.download} ↓</button>
+      <div class="table-scroll"><table id="preview" hidden><caption>{t.preview}</caption><thead><tr><th>ID</th><th>product</th><th>category</th><th>amount</th></tr></thead><tbody/></table></div>
+    </div>
+    <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" class="lab-panel" hidden>
+      <p class="eyebrow">{t.fictitious}</p><div class="row g-5"><div class="col-lg-6"><div class="product-list">{t.products.map((p,i)=><div class="product"><span class="product-symbol" aria-hidden="true">{['□','▤','⊏'][i]}</span><div><h3>{p}</h3><span>${[35,12,24][i]}.00</span></div><button class="button-small" data-add={i}>{t.add} +</button></div>)}</div></div><div class="col-lg-6 order-box"><h3>{t.cart}</h3><ul id="cart"/><p class="order-total">{t.total}<strong id="cart-total">$0.00</strong></p><p id="order-state" role="status"/><div class="d-flex gap-2 flex-wrap"><button id="confirm" class="button-primary" disabled>{t.confirm}</button><button id="next" class="button-primary" hidden>{t.next}</button><button id="reset" class="button-secondary">{t.reset}</button></div></div></div><p class="small-note mt-4">{t.orderNote}</p>
+    </div>
+  </div>
+</div></section>
+<script>import '../scripts/lab';</script>
+

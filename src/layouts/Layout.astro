@@ -1,0 +1,44 @@
+---
+import 'bootstrap/dist/css/bootstrap-grid.min.css';
+import 'bootstrap/dist/css/bootstrap-utilities.min.css';
+import '../styles/global.css';
+import { base, profile } from '../data/config';
+import { translations, type Locale } from '../i18n';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const t = translations[lang];
+const canonical = new URL(`${base}/${lang}/`, Astro.site);
+---
+<!doctype html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{profile.name} — {t.title}</title><meta name="description" content={t.description}/>
+    <meta name="color-scheme" content="dark light"/><meta name="theme-color" content="#101923"/>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml"/>
+    <link rel="canonical" href={canonical}/>
+    {(['es','en'] as const).map(locale => <link rel="alternate" hreflang={locale} href={new URL(`${base}/${locale}/`, Astro.site)}/>)}
+    <link rel="alternate" hreflang="x-default" href={new URL(`${base}/es/`, Astro.site)}/>
+    <meta property="og:type" content="website"/><meta property="og:title" content={`${profile.name} — ${t.title}`}/><meta property="og:description" content={t.description}/><meta property="og:url" content={canonical}/><meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'}/>
+    <script is:inline>try { document.documentElement.dataset.theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark'; } catch {}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skip}</a>
+    <header class="site-header"><div class="container d-flex align-items-center justify-content-between gap-3">
+      <a class="wordmark" href={`${base}/${lang}/`} aria-label={profile.name}>am<span> /</span></a>
+      <button class="menu-toggle button-small" aria-expanded="false" aria-controls="navigation">{t.menu}</button>
+      <nav id="navigation" aria-label={lang === 'es' ? 'Principal' : 'Main'}>{t.nav.map((label,i) => <a href={`#${['services','projects','lab','about','contact'][i]}`}>{label}</a>)}</nav>
+      <div class="header-tools d-flex align-items-center gap-3"><a class="language" data-language href={`${base}/${lang === 'es' ? 'en' : 'es'}/`} lang={lang === 'es' ? 'en' : 'es'} aria-label={lang === 'es' ? 'Read in English' : 'Leer en español'}><span class:list={{active:lang==='es'}}>ES</span><span class="separator">/</span><span class:list={{active:lang==='en'}}>EN</span></a><button class="theme-button" aria-label={t.theme} title={t.theme}><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></button></div>
+    </div></header>
+    <main id="main"><slot/></main>
+    <footer class="container"><div><a class="wordmark" href="#main">am<span> /</span></a><p>{t.footer}</p></div><p>{t.rights}<br/>© {new Date().getFullYear()} Carlos Andrés Martínez Portillo</p></footer>
+    <script>
+      document.querySelector('.theme-button')?.addEventListener('click', () => { const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = theme; try {localStorage.setItem('theme', theme);} catch {} document.dispatchEvent(new Event('themechange')); });
+      const menu = document.querySelector<HTMLButtonElement>('.menu-toggle');
+      menu?.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', String(open)); document.querySelector('#navigation')?.classList.toggle('is-open', open); });
+      document.querySelectorAll('#navigation a').forEach(a => a.addEventListener('click', () => { menu?.setAttribute('aria-expanded','false'); document.querySelector('#navigation')?.classList.remove('is-open'); }));
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.querySelector('#navigation')?.classList.remove('is-open'); menu?.setAttribute('aria-expanded','false'); } });
+      document.querySelector('[data-language]')?.addEventListener('click', () => { try { localStorage.setItem('language', document.documentElement.lang === 'es' ? 'en' : 'es'); } catch {} });
+    </script>
+  </body>
+</html>
