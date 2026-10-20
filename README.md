@@ -1,6 +1,6 @@
 # Portafolio freelance — Carlos Andrés Martínez Portillo
 
-Portafolio bilingüe estático con Astro, TypeScript, Bootstrap 5.3 y CSS propio. No usa Tailwind, backend, analítica ni servicios de pago.
+Portafolio bilingüe orientado a desarrollo de dashboards, análisis de datos y procesos ETL. Construido con Astro, TypeScript, Bootstrap 5.3 y CSS propio. No usa Tailwind, backend, seguimiento de visitantes ni servicios de pago.
 
 Sitio público: [and73s.github.io/portafolio-freelance](https://and73s.github.io/portafolio-freelance/).
 
@@ -27,7 +27,8 @@ La ruta inicial recuerda el idioma elegido y abre `/es/` por defecto. Las rutas 
 - `src/layouts/Layout.astro`: navegación, metadatos y controles globales.
 - `src/pages/[lang]/index.astro`: composición editorial de la página.
 - `src/components/Lab.astro`: interfaz accesible del laboratorio.
-- `src/scripts/lab.ts`: dashboard, pestañas y simulador de pedidos.
+- `src/scripts/lab.ts`: dashboard, pestañas y análisis de variaciones.
+- `src/services/analysis.ts`: comparación trimestral y participación por categoría con datos ficticios.
 - `src/services/reports.ts`: validación, consolidación y exportación segura.
 - `src/services/report.worker.ts`: procesamiento de archivos en segundo plano.
 - `src/styles/global.css`: variables de color, tipografía y componentes visuales.
@@ -53,7 +54,9 @@ Reportes: CSV UTF-8 o primera hoja de XLSX. Columnas obligatorias `id,product,ca
 
 Los archivos no se suben a servidores y no se persisten. El worker se termina a los 15 segundos, también al terminar o fallar. Un archivo comprimido malicioso puede consumir memoria durante su descompresión antes de verificar las filas: no hay garantía de aislamiento de memoria frente a archivos hostiles. No se debe usar esta demo como servicio de recepción de archivos no confiables.
 
-El pedido simulado no cobra, envía ni llama a WhatsApp. Los datos se pierden al recargar. No hay claves privadas, autenticación, base de datos, `eval` ni inserción de HTML desde archivos; las vistas previas se construyen con `textContent`.
+La demo de análisis compara enero–marzo con abril–junio de 2026. Calcula la variación sobre el trimestre anterior y la participación de cada categoría sobre el total del trimestre actual. Filtrar no cambia ese denominador. No se atribuyen causas ni se generan pronósticos. La demo ETL carga el resultado en memoria y permite exportar CSV; no se conecta a un almacén de datos remoto.
+
+Los datos se pierden al recargar. No hay claves privadas, autenticación, base de datos, `eval` ni inserción de HTML desde archivos; las vistas previas se construyen con `textContent`.
 
 ## SEO, accesibilidad y rendimiento
 
@@ -85,7 +88,7 @@ Para un dominio propio o repositorio `TU-USUARIO.github.io`, usar `/` como base 
 2. Diseño: sistema visual propio, responsive, navegación y temas.
 3. Internacionalización: contenido, rutas y preferencias ES/EN.
 4. Contenido: servicios, proyectos, perfil, proceso y contacto configurable.
-5. Demos: dashboard, reportes CSV/XLSX y pedidos locales.
+5. Demos: dashboard, proceso ETL con CSV/XLSX y análisis trimestral por categorías.
 6. Calidad: comprobación de tipos, pruebas unitarias y flujos de navegador.
 7. Publicación: desplegado en GitHub Pages mediante el workflow manual. Correo y perfiles profesionales pendientes de configuración.
 
@@ -93,7 +96,7 @@ Para un dominio propio o repositorio `TU-USUARIO.github.io`, usar `/` como base 
 
 - `astro check`: 0 errores, 0 advertencias.
 - `astro build`: compilación estática correcta; también se comprobó una base `/portfolio` durante la implementación.
-- Vitest: 3 pruebas aprobadas de validación, consolidación y exportación segura.
-- Playwright sobre el build estático: 5 pruebas aprobadas. Cubren idioma y persistencia, temas, navegación móvil, filtros, CSV, descarga, errores, XLSX real, rechazo de fórmulas, estados de pedidos, formulario, teclado y etiquetas.
+- Vitest: validación, consolidación, exportación segura, comparación trimestral y denominadores de porcentajes.
+- Playwright sobre el build estático: idioma y persistencia, temas, navegación móvil, filtros, CSV, descarga, errores, XLSX real, rechazo de fórmulas, análisis de variaciones, formulario, teclado y etiquetas.
 - Capturas revisadas en escritorio (1440 px) y móvil (375 px), con temas oscuro y claro; sin desbordamiento horizontal en los tamaños probados.
 - Pendiente: medición Lighthouse, auditoría completa WCAG y validación en Safari/Firefox. No se afirman puntuaciones ni conformidad no medidas.

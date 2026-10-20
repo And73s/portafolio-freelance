@@ -39,84 +39,73 @@ test("dashboard filters, report processing, download and error handling", async 
   await page.locator("#category").selectOption("1");
   await expect(page.locator("#metric-0")).not.toHaveText(original!);
   await expect(page.locator("#sales-table tr")).toHaveCount(3);
-  await page.getByRole("tab", { name: "Procesar reportes" }).click();
-  await page
-    .locator("#files")
-    .setInputFiles({
-      name: "demo.csv",
-      mimeType: "text/csv",
-      buffer: Buffer.from(
-        "id,product,category,amount\n1,A,B,10\n1,A,B,10\n2,C,B,20",
-      ),
-    });
+  await page.getByRole("tab", { name: "Proceso ETL" }).click();
+  await page.locator("#files").setInputFiles({
+    name: "demo.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(
+      "id,product,category,amount\n1,A,B,10\n1,A,B,10\n2,C,B,20",
+    ),
+  });
   await page.locator("#process").click();
   await expect(page.locator("#file-status")).toContainText("2 / 1 /");
   await expect(page.locator("#preview tbody tr")).toHaveCount(2);
   const download = page.waitForEvent("download");
   await page.locator("#download").click();
   expect((await download).suggestedFilename()).toBe("processed.csv");
-  await page
-    .locator("#files")
-    .setInputFiles({
-      name: "bad.csv",
-      mimeType: "text/csv",
-      buffer: Buffer.from("wrong\ndata"),
-    });
+  await page.locator("#files").setInputFiles({
+    name: "bad.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from("wrong\ndata"),
+  });
   await page.locator("#process").click();
   await expect(page.locator("#file-status")).toContainText(
     "No se pudo procesar",
   );
   await expect(page.locator("#download")).toBeHidden();
 });
-test("order state transitions and honest contact configuration", async ({
+test("quarterly analysis filters and honest contact configuration", async ({
   page,
 }) => {
   await page.goto("/en/");
-  await page.getByRole("tab", { name: "Simulate an order" }).click();
-  await expect(page.locator("#confirm")).toBeDisabled();
-  await page.locator('[data-add="0"]').click();
-  await expect(page.locator("#cart-total")).toContainText("35.00");
-  await page.locator("#confirm").click();
-  await expect(page.locator("#order-state")).toContainText("Confirmed");
-  await page.locator("#next").click();
-  await page.locator("#next").click();
-  await expect(page.locator("#order-state")).toContainText("Completed");
-  await page.locator("#reset").click();
-  await expect(page.locator("#cart")).toHaveText("Your cart is empty.");
-  await expect(page.locator("#contact-form button")).toBeDisabled();
-  await page.locator("#email").fill("invalid");
+  await page.getByRole("tab", { name: /Data analysis/ }).click();
+  await expect(page.locator("#analysis-metric-1")).toHaveText("$25,250.00");
+  await expect(page.locator("#analysis-table tr")).toHaveCount(3);
+  await page.locator("#analysis-category").selectOption("1");
+  await expect(page.locator("#analysis-metric-1")).toHaveText("$12,650.00");
+  await expect(page.locator("#analysis-table tr")).toHaveCount(1);
+  await page.locator("#analysis-category").selectOption("0");
+  await expect(page.locator("#analysis-table tr")).toHaveCount(3);
+  await page.setViewportSize({ width: 375, height: 812 });
   expect(
-    await page
-      .locator("#email")
-      .evaluate((e: HTMLInputElement) => e.validity.typeMismatch),
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
   ).toBe(true);
+  await expect(page.locator("#contact-form button")).toBeDisabled();
 });
 test("XLSX input works and formula cells are rejected", async ({ page }) => {
   await page.goto("/en/");
-  await page.getByRole("tab", { name: "Process reports" }).click();
+  await page.getByRole("tab", { name: "ETL workflow" }).click();
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Demo");
   sheet.addRow(["id", "product", "category", "amount"]);
   sheet.addRow(["1", "Sample", "Equipment", 25]);
-  await page
-    .locator("#files")
-    .setInputFiles({
-      name: "demo.xlsx",
-      mimeType:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      buffer: Buffer.from(await workbook.xlsx.writeBuffer()),
-    });
+  await page.locator("#files").setInputFiles({
+    name: "demo.xlsx",
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    buffer: Buffer.from(await workbook.xlsx.writeBuffer()),
+  });
   await page.locator("#process").click();
   await expect(page.locator("#file-status")).toContainText("1 / 0 /");
   sheet.getCell("D2").value = { formula: "1+1", result: 2 };
-  await page
-    .locator("#files")
-    .setInputFiles({
-      name: "formula.xlsx",
-      mimeType:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      buffer: Buffer.from(await workbook.xlsx.writeBuffer()),
-    });
+  await page.locator("#files").setInputFiles({
+    name: "formula.xlsx",
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    buffer: Buffer.from(await workbook.xlsx.writeBuffer()),
+  });
   await page.locator("#process").click();
   await expect(page.locator("#file-status")).toContainText("Unable to process");
 });

@@ -1,3 +1,4 @@
+import { compareCategories } from "../services/analysis";
 import { translations, type Locale } from "../i18n";
 import { exportCSV, type RecordRow } from "../services/reports";
 import { download } from "../utils/download";
@@ -247,63 +248,30 @@ el("process").addEventListener("click", () => {
 el("download").addEventListener("click", () =>
   download(exportCSV(processed), "processed.csv"),
 );
-const quantities = [0, 0, 0],
-  prices = [35, 12, 24];
-let status = -1;
-function renderCart() {
-  const cart = el("cart");
-  cart.replaceChildren();
-  let total = 0;
-  quantities.forEach((q, i) => {
-    if (!q) return;
-    total += q * prices[i];
-    const li = document.createElement("li"),
-      label = document.createElement("span");
-    label.textContent = `${t.products[i]} × ${q}`;
-    const remove = document.createElement("button");
-    remove.className = "button-small";
-    remove.textContent = t.remove;
-    remove.disabled = status !== -1;
-    remove.setAttribute("aria-label", `${t.remove}: ${t.products[i]}`);
-    remove.addEventListener("click", () => {
-      quantities[i] = 0;
-      renderCart();
-    });
-    li.append(label, remove);
-    cart.append(li);
-  });
-  if (!total) cart.textContent = t.empty;
-  el("cart-total").textContent = money(total);
-  el<HTMLButtonElement>("confirm").disabled = !total || status !== -1;
-  el("confirm").hidden = status !== -1;
-  el("next").hidden = status < 0 || status === 2;
-  el("order-state").textContent =
-    status < 0 ? "" : `DEMO-001 · ${t.states[status]}`;
-  root
-    .querySelectorAll<HTMLButtonElement>("[data-add]")
-    .forEach(
-      (b) =>
-        (b.disabled = status !== -1 || quantities[Number(b.dataset.add)] >= 99),
-    );
+
+function renderAnalysis() {
+  const category = Number(el<HTMLSelectElement>("analysis-category").value);
+  const result = compareCategories(category);
+  const percent = (value: number | null) =>
+    value === null
+      ? t.analysisMissing
+      : new Intl.NumberFormat(lang, {
+          style: "percent",
+          maximumFractionDigits: 1,
+        }).format(value);
+  el("analysis-metric-0").textContent = money(result.previous);
+  el("analysis-metric-1").textContent = money(result.current);
+  el("analysis-metric-2").textContent = percent(result.change);
+  el("analysis-table").replaceChildren();
+  result.rows.forEach((r) =>
+    row(el("analysis-table"), [
+      t.categories[r.category],
+      money(r.previous),
+      money(r.current),
+      percent(r.change),
+      percent(r.share),
+    ]),
+  );
 }
-root.querySelectorAll<HTMLElement>("[data-add]").forEach((b) =>
-  b.addEventListener("click", () => {
-    const index = Number(b.dataset.add);
-    if (status === -1 && quantities[index] < 99) quantities[index]++;
-    renderCart();
-  }),
-);
-el("confirm").addEventListener("click", () => {
-  if (quantities.some(Boolean) && status === -1) status = 0;
-  renderCart();
-});
-el("next").addEventListener("click", () => {
-  if (status >= 0 && status < 2) status++;
-  renderCart();
-});
-el("reset").addEventListener("click", () => {
-  quantities.fill(0);
-  status = -1;
-  renderCart();
-});
-renderCart();
+el("analysis-category").addEventListener("change", renderAnalysis);
+renderAnalysis();

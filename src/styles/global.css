@@ -479,35 +479,35 @@ p {
   letter-spacing: 0.1em;
   margin: 22px 0 0;
 }
-.order-art {
+.analysis-art {
   width: 100%;
   max-width: 320px;
 }
-.order-art > span {
+.analysis-art > span {
   font:
     10px Consolas,
     monospace;
   color: var(--accent);
 }
-.order-art > div {
+.analysis-art > div {
   display: flex;
   align-items: center;
   gap: 22px;
   border-bottom: 1px solid var(--line);
   padding: 22px 0;
 }
-.order-art i {
+.analysis-art i {
   font:
     11px Consolas,
     monospace;
   color: var(--muted);
 }
-.order-art b {
+.analysis-art b {
   font-size: 12px;
   letter-spacing: 0.15em;
   font-weight: 400;
 }
-.order-art div span {
+.analysis-art div span {
   margin-left: auto;
   color: var(--accent);
 }
