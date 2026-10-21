@@ -42,7 +42,7 @@ Astro genera HTML estático; TypeScript valida el código. Chart.js ofrece visua
 
 ## Configuración personal pendiente
 
-En `src/data/config.ts`, añadir correo y URLs reales de GitHub, LinkedIn, Workana y Upwork. Vacíos por defecto: el formulario permanece deshabilitado y los perfiles muestran un aviso de configuración pendiente. No hay envíos simulados. Al añadir correo, el formulario valida los campos y abre un borrador `mailto:`; el visitante lo revisa y envía desde su cliente de correo. Algunos clientes tienen límites de longitud para estos enlaces.
+El correo configurado en `src/data/config.ts` es `carlosandres896@gmail.com`. El formulario está habilitado: valida los campos y abre un borrador `mailto:` que el visitante revisa y envía desde su cliente de correo. No envía mensajes automáticamente. Algunos clientes tienen límites de longitud para estos enlaces. Los perfiles de GitHub, LinkedIn, Workana y Upwork siguen pendientes de configuración; añadir únicamente URLs reales.
 
 Activar `available` únicamente cuando la disponibilidad esté confirmada. No se afirman clientes, certificaciones, métricas de impacto ni años de experiencia. Los proyectos se presentan como conceptos demostrativos independientes. Sustituir las descripciones solo con información publicable y verificada.
 
@@ -90,7 +90,7 @@ Para un dominio propio o repositorio `TU-USUARIO.github.io`, usar `/` como base 
 4. Contenido: servicios, proyectos, perfil, proceso y contacto configurable.
 5. Demos: dashboard, proceso ETL con CSV/XLSX y análisis trimestral por categorías.
 6. Calidad: comprobación de tipos, pruebas unitarias y flujos de navegador.
-7. Publicación: desplegado en GitHub Pages mediante el workflow manual. Correo y perfiles profesionales pendientes de configuración.
+7. Publicación: desplegado en GitHub Pages mediante el workflow manual. Correo configurado; perfiles profesionales pendientes.
 
 ## Verificación realizada
 

@@ -82,7 +82,8 @@ test("quarterly analysis filters and honest contact configuration", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await expect(page.locator("#contact-form button")).toBeDisabled();
+  await expect(page.locator("#contact-form button")).toBeEnabled();
+  await expect(page.locator("#contact-form")).toHaveAttribute("data-email", "carlosandres896@gmail.com");
 });
 test("XLSX input works and formula cells are rejected", async ({ page }) => {
   await page.goto("/en/");
