@@ -1,6 +1,6 @@
 export const profile = {
   name: "Carlos Andrés Martínez Portillo",
-  email: "", // Configure before publication.
+  email: "carlosandres896@gmail.com", // Configure before publication.
   available: false,
   social: { GitHub: "", LinkedIn: "", Workana: "", Upwork: "" },
 };
